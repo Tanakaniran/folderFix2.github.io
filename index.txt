@@ -1,0 +1,12 @@
+-- Pastikan ekstensi aktif
+CREATE EXTENSION IF NOT EXISTS "pgcrypto";
+
+-- Menyuntikkan 3 akun berbeda (Jika email sudah ada, maka akan di-update password & role-nya)
+INSERT INTO users (username, email, password_hash, role) 
+VALUES  
+    ('admin', 'Arminjoni@surveybiz.com', crypt('admin143', gen_salt('bf')), 'Analyst'),
+    ('analyst_data', 'IvanNggai@surveybiz.com', crypt('analyst543', gen_salt('bf')), 'Analyst'),
+    ('manager_ops', 'TanakaNirang@surveybiz.com', crypt('manager543', gen_salt('bf')), 'Manager')
+ON CONFLICT (email) DO UPDATE 
+SET password_hash = EXCLUDED.password_hash, 
+    role = EXCLUDED.role;
